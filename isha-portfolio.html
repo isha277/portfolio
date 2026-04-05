@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Isha — UI/UX Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ─── RESET & BASE ─────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:     #1a1714;
+    --mist:    #f5f2ee;
+    --cream:   #faf8f5;
+    --stone:   #9c9289;
+    --accent:  #c97d4e;
+    --accent2: #3d5a47;
+    --border:  rgba(26,23,20,.09);
+    --ff-display: 'Cormorant Garamond', Georgia, serif;
+    --ff-body:    'DM Sans', sans-serif;
+    --ease-out-expo: cubic-bezier(0.16,1,0.3,1);
+  }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: var(--ff-body);
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ─── CURSOR DOT ───────────────────────────────────── */
+  #cursor {
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform .15s var(--ease-out-expo), width .3s, height .3s, background .3s;
+  }
+  #cursor.grow { width: 48px; height: 48px; background: rgba(201,125,78,.18); }
+
+  /* ─── NAV ──────────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 4rem;
+    background: rgba(250,248,245,0);
+    backdrop-filter: blur(0px);
+    transition: background .5s, backdrop-filter .5s, padding .4s;
+    border-bottom: 1px solid transparent;
+  }
+  nav.scrolled {
+    background: rgba(250,248,245,.88);
+    backdrop-filter: blur(18px);
+    padding: 1rem 4rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--ff-display);
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: .02em;
+    color: var(--ink);
+  }
+
+  .nav-links { display: flex; gap: 2.5rem; align-items: center; }
+  .nav-links a {
+    font-size: .82rem;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--stone);
+    transition: color .25s;
+  }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-links .nav-cta {
+    padding: .5rem 1.3rem;
+    border: 1px solid var(--ink);
+    border-radius: 100px;
+    color: var(--ink);
+    transition: background .25s, color .25s;
+  }
+  .nav-links .nav-cta:hover { background: var(--ink); color: var(--cream); }
+
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+  .hamburger span { display: block; width: 24px; height: 1.5px; background: var(--ink); transition: .3s; }
+
+  /* ─── HERO ─────────────────────────────────────────── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 7rem 4rem 4rem;
+    gap: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* subtle grain */
+  #hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  .hero-text { position: relative; z-index: 1; }
+
+  .hero-eyebrow {
+    display: flex; align-items: center; gap: .75rem;
+    font-size: .78rem; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--stone); margin-bottom: 1.8rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block; width: 32px; height: 1px;
+    background: var(--accent);
+  }
+
+  .hero-name {
+    font-family: var(--ff-display);
+    font-size: clamp(4rem, 8vw, 7.5rem);
+    font-weight: 300;
+    line-height: .95;
+    letter-spacing: -.02em;
+    color: var(--ink);
+    margin-bottom: 1.2rem;
+  }
+  .hero-name em { font-style: italic; color: var(--accent); }
+
+  .hero-tagline {
+    font-size: 1.05rem;
+    color: var(--stone);
+    max-width: 420px;
+    line-height: 1.7;
+    margin-bottom: 2.8rem;
+  }
+
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn-primary {
+    padding: .9rem 2rem;
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 100px;
+    font-size: .85rem;
+    font-weight: 500;
+    letter-spacing: .05em;
+    transition: transform .25s var(--ease-out-expo), background .25s;
+    display: inline-block;
+  }
+  .btn-primary:hover { transform: translateY(-2px); background: #2e2a26; }
+
+  .btn-outline {
+    padding: .9rem 2rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: .85rem;
+    font-weight: 500;
+    letter-spacing: .05em;
+    color: var(--stone);
+    transition: border-color .25s, color .25s, transform .25s;
+    display: inline-block;
+  }
+  .btn-outline:hover { border-color: var(--ink); color: var(--ink); transform: translateY(-2px); }
+
+  /* Hero visual */
+  .hero-visual {
+    position: relative; z-index: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .hero-blob {
+    width: 460px; height: 520px;
+    background: linear-gradient(135deg, #e8ddd5 0%, #d4c9be 50%, #bfb3a8 100%);
+    border-radius: 48% 52% 62% 38% / 44% 38% 62% 56%;
+    animation: morph 8s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  @keyframes morph {
+    0%,100% { border-radius: 48% 52% 62% 38% / 44% 38% 62% 56%; }
+    25%      { border-radius: 40% 60% 55% 45% / 56% 44% 60% 40%; }
+    50%      { border-radius: 55% 45% 40% 60% / 40% 60% 44% 56%; }
+    75%      { border-radius: 60% 40% 56% 44% / 50% 50% 40% 60%; }
+  }
+
+  .hero-blob-inner {
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, rgba(255,255,255,.35) 0%, transparent 60%);
+  }
+
+  .hero-initials {
+    font-family: var(--ff-display);
+    font-size: 9rem;
+    font-weight: 300;
+    color: rgba(255,255,255,.45);
+    letter-spacing: -.04em;
+    line-height: 1;
+    position: relative; z-index: 1;
+    user-select: none;
+  }
+
+  /* Floating badges */
+  .badge {
+    position: absolute;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: .6rem 1rem;
+    font-size: .75rem;
+    font-weight: 500;
+    color: var(--ink);
+    display: flex; align-items: center; gap: .4rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,.06);
+    animation: float 4s ease-in-out infinite;
+  }
+  .badge-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .badge:nth-child(3) { top: 10%; right: -30px; animation-delay: 0s; }
+  .badge:nth-child(4) { bottom: 20%; left: -40px; animation-delay: 1.5s; }
+  .badge:nth-child(5) { bottom: 8%; right: 10%; animation-delay: .8s; }
+
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
+
+  /* scroll hint */
+  .scroll-hint {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: .5rem;
+    font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--stone);
+    z-index: 1;
+  }
+  .scroll-line {
+    width: 1px; height: 48px;
+    background: linear-gradient(to bottom, var(--stone), transparent);
+    animation: pulse-line 2s ease-in-out infinite;
+  }
+  @keyframes pulse-line {
+    0%,100% { opacity: .4; }
+    50%      { opacity: 1; }
+  }
+
+  /* ─── SECTION SHARED ──────────────────────────────── */
+  section { padding: 6rem 4rem; }
+
+  .section-label {
+    display: flex; align-items: center; gap: .75rem;
+    font-size: .75rem; letter-spacing: .15em; text-transform: uppercase;
+    color: var(--stone); margin-bottom: 1rem;
+  }
+  .section-label::before {
+    content: ''; display: block; width: 24px; height: 1px; background: var(--accent);
+  }
+
+  .section-title {
+    font-family: var(--ff-display);
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -.01em;
+    color: var(--ink);
+  }
+
+  /* ─── ABOUT ───────────────────────────────────────── */
+  #about {
+    background: var(--mist);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+    border-radius: 2rem;
+    margin: 0 2rem;
+    padding: 5rem;
+  }
+
+  .about-bio {
+    font-size: 1.08rem;
+    color: var(--stone);
+    line-height: 1.8;
+    max-width: 500px;
+    margin-top: 1.5rem;
+  }
+
+  .about-bio strong { color: var(--ink); font-weight: 500; }
+
+  .about-right { display: flex; flex-direction: column; gap: 2.5rem; }
+
+  .skills-block h4, .tools-block h4 {
+    font-size: .75rem; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--stone); margin-bottom: 1rem;
+  }
+
+  .tags { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+  .tag {
+    padding: .45rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: .82rem;
+    font-weight: 400;
+    color: var(--ink);
+    background: var(--cream);
+    transition: background .25s, border-color .25s;
+  }
+  .tag:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+  .tag.accent { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ─── PROJECTS ────────────────────────────────────── */
+  #projects { padding: 6rem 4rem; }
+
+  .projects-header {
+    display: flex; justify-content: space-between;
+    align-items: flex-end; margin-bottom: 3.5rem;
+    flex-wrap: wrap; gap: 1rem;
+  }
+
+  .view-all {
+    font-size: .82rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--stone); border-bottom: 1px solid var(--stone);
+    padding-bottom: 2px;
+    transition: color .25s, border-color .25s;
+  }
+  .view-all:hover { color: var(--ink); border-color: var(--ink); }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    background: var(--mist);
+    border-radius: 1.5rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: transform .4s var(--ease-out-expo), box-shadow .4s;
+    cursor: pointer;
+    display: flex; flex-direction: column;
+  }
+  .project-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,.1); }
+  .project-card.featured { grid-column: span 2; flex-direction: row; }
+
+  .project-thumb {
+    width: 100%; aspect-ratio: 16/9;
+    overflow: hidden; position: relative; flex-shrink: 0;
+  }
+  .project-card.featured .project-thumb { width: 55%; aspect-ratio: auto; }
+
+  .thumb-inner {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--ff-display);
+    font-size: 5rem; font-weight: 300;
+    letter-spacing: -.04em;
+    transition: transform .5s var(--ease-out-expo);
+    color: rgba(255,255,255,.7);
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card:hover .thumb-inner { transform: scale(1.04); }
+
+  .thumb-wj   { background: linear-gradient(135deg, #5c4033 0%, #8b5e3c 60%, #c49a6c 100%); }
+  .thumb-fin  { background: linear-gradient(135deg, #1a2f4a 0%, #2e5077 60%, #4a90d9 100%); }
+  .thumb-hlth { background: linear-gradient(135deg, #1e3d2f 0%, #2e6b4a 60%, #5daa7a 100%); }
+  .thumb-edu  { background: linear-gradient(135deg, #3b2a4a 0%, #6b4785 60%, #c084e8 100%); }
+
+  .thumb-grid {
+    position: absolute; inset: 0; opacity: .15;
+    background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.5) 0px, rgba(255,255,255,.5) 1px, transparent 1px, transparent 40px),
+                      repeating-linear-gradient(90deg, rgba(255,255,255,.5) 0px, rgba(255,255,255,.5) 1px, transparent 1px, transparent 40px);
+  }
+
+  .project-info { padding: 2rem; display: flex; flex-direction: column; flex: 1; }
+  .project-card.featured .project-info { padding: 3rem; justify-content: center; }
+
+  .project-tags { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: .8rem; }
+  .project-tag {
+    font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--stone); padding: .2rem .7rem;
+    border: 1px solid var(--border); border-radius: 100px;
+  }
+
+  .project-title {
+    font-family: var(--ff-display);
+    font-size: 1.6rem; font-weight: 400;
+    line-height: 1.2; color: var(--ink);
+    margin-bottom: .6rem;
+  }
+  .project-card.featured .project-title { font-size: 2.2rem; }
+
+  .project-desc {
+    font-size: .88rem; color: var(--stone);
+    line-height: 1.7; flex: 1; margin-bottom: 1.5rem;
+  }
+
+  .case-study-link {
+    display: inline-flex; align-items: center; gap: .5rem;
+    font-size: .8rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink); font-weight: 500;
+    transition: gap .25s;
+  }
+  .case-study-link:hover { gap: .9rem; }
+  .case-study-link svg { width: 14px; height: 14px; }
+
+  /* ─── CASE STUDY MODAL ─────────────────────────────── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(26,23,20,.6);
+    backdrop-filter: blur(6px);
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s;
+    display: flex; align-items: flex-end;
+    padding: 1rem;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    width: 100%; max-width: 860px; margin: 0 auto;
+    background: var(--cream);
+    border-radius: 2rem 2rem 1rem 1rem;
+    max-height: 88vh; overflow-y: auto;
+    transform: translateY(60px); opacity: 0;
+    transition: transform .5s var(--ease-out-expo), opacity .4s;
+    padding: 3rem;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); opacity: 1; }
+
+  .modal-close {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--mist); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; color: var(--ink);
+    transition: background .2s;
+  }
+  .modal-close:hover { background: var(--ink); color: var(--cream); }
+
+  .modal-tag { /* same as project-tag */ }
+
+  .modal h2 {
+    font-family: var(--ff-display);
+    font-size: 2.4rem; font-weight: 300; margin: .5rem 0 1rem;
+  }
+
+  .modal-lead { font-size: 1.05rem; color: var(--stone); line-height: 1.75; margin-bottom: 2rem; }
+
+  .modal-divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+  .modal-section-title {
+    font-family: var(--ff-display);
+    font-size: 1.4rem; font-weight: 400; margin-bottom: .75rem;
+  }
+
+  .modal-body p { font-size: .92rem; color: var(--stone); line-height: 1.8; margin-bottom: 1rem; }
+
+  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+
+  .modal-card {
+    background: var(--mist); border-radius: 1rem; padding: 1.5rem;
+    border: 1px solid var(--border);
+  }
+  .modal-card h5 { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--stone); margin-bottom: .5rem; }
+  .modal-card p  { font-size: .88rem; color: var(--ink); line-height: 1.6; }
+
+  .outcome-list { list-style: none; }
+  .outcome-list li {
+    padding: .6rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: .9rem; color: var(--ink);
+    display: flex; align-items: flex-start; gap: .75rem;
+  }
+  .outcome-list li::before {
+    content: '→'; color: var(--accent); flex-shrink: 0; margin-top: 0;
+  }
+
+  /* ─── GALLERY ─────────────────────────────────────── */
+  #gallery {
+    background: var(--mist);
+    border-radius: 2rem;
+    margin: 0 2rem;
+    padding: 5rem;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+
+  .gallery-item {
+    border-radius: 1rem; overflow: hidden;
+    aspect-ratio: 4/3;
+    position: relative; cursor: pointer;
+    border: 1px solid var(--border);
+  }
+
+  .gallery-fill {
+    width: 100%; height: 100%;
+    transition: transform .5s var(--ease-out-expo);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--ff-display);
+    font-size: 2rem; color: rgba(255,255,255,.6);
+    font-weight: 300;
+  }
+  .gallery-item:hover .gallery-fill { transform: scale(1.06); }
+
+  .gallery-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(26,23,20,.7) 0%, transparent 60%);
+    opacity: 0; transition: opacity .35s;
+    display: flex; align-items: flex-end; padding: 1.2rem;
+  }
+  .gallery-item:hover .gallery-overlay { opacity: 1; }
+  .gallery-overlay span {
+    font-size: .8rem; color: white; letter-spacing: .06em;
+    text-transform: uppercase; font-weight: 500;
+  }
+
+  .g1 { background: linear-gradient(135deg, #d4a76a, #b8721e); }
+  .g2 { background: linear-gradient(135deg, #6a9bb5, #2c6284); }
+  .g3 { background: linear-gradient(135deg, #7db08a, #3a6b4a); }
+  .g4 { background: linear-gradient(135deg, #b59fd4, #6a4a9b); }
+  .g5 { background: linear-gradient(135deg, #d4856a, #9b3a1e); }
+  .g6 { background: linear-gradient(135deg, #80a8b0, #3d6970); }
+
+  /* ─── PROCESS ─────────────────────────────────────── */
+  #process { padding: 6rem 4rem; }
+
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+    position: relative;
+  }
+  .process-steps::before {
+    content: '';
+    position: absolute; top: 2.5rem; left: 3rem; right: 3rem; height: 1px;
+    background: linear-gradient(to right, var(--accent), var(--accent2));
+    z-index: 0;
+  }
+
+  .process-step { position: relative; z-index: 1; }
+
+  .step-num {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--ink); color: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--ff-display); font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 4px 14px rgba(26,23,20,.2);
+  }
+
+  .step-title {
+    font-family: var(--ff-display); font-size: 1.2rem; font-weight: 400;
+    margin-bottom: .4rem; color: var(--ink);
+  }
+  .step-desc { font-size: .85rem; color: var(--stone); line-height: 1.65; }
+
+  /* ─── CONTACT ─────────────────────────────────────── */
+  #contact {
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 2rem;
+    margin: 0 2rem 4rem;
+    padding: 6rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  #contact::before {
+    content: 'Hello.';
+    font-family: var(--ff-display);
+    font-size: 16rem; font-weight: 300;
+    color: rgba(255,255,255,.03);
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    white-space: nowrap; pointer-events: none;
+    letter-spacing: -.04em;
+  }
+
+  .contact-label { color: rgba(245,242,238,.5); }
+  .contact-label::before { background: var(--accent); }
+
+  #contact .section-title { color: var(--cream); margin-bottom: 1.2rem; }
+
+  .contact-sub {
+    font-size: 1rem; color: rgba(245,242,238,.6); margin-bottom: 2.5rem;
+  }
+
+  .contact-email {
+    font-family: var(--ff-display);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 300; color: var(--cream);
+    border-bottom: 1px solid rgba(255,255,255,.2);
+    padding-bottom: .3rem;
+    transition: color .25s, border-color .25s;
+    display: inline-block; margin-bottom: 3rem;
+  }
+  .contact-email:hover { color: var(--accent); border-color: var(--accent); }
+
+  .social-links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+  .social-link {
+    padding: .65rem 1.5rem;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 100px;
+    font-size: .82rem; letter-spacing: .08em;
+    color: rgba(245,242,238,.7);
+    text-transform: uppercase;
+    transition: border-color .25s, color .25s, background .25s;
+  }
+  .social-link:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── FOOTER ──────────────────────────────────────── */
+  footer {
+    padding: 2rem 4rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: .78rem; color: var(--stone); flex-wrap: wrap; gap: 1rem;
+  }
+
+  /* ─── REVEAL ANIMATIONS ─────────────────────────────── */
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity .75s var(--ease-out-expo), transform .75s var(--ease-out-expo);
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: .1s; }
+  .reveal-delay-2 { transition-delay: .2s; }
+  .reveal-delay-3 { transition-delay: .3s; }
+  .reveal-delay-4 { transition-delay: .4s; }
+
+  /* ─── MOBILE MENU ─────────────────────────────────── */
+  .mobile-menu {
+    position: fixed; inset: 0; z-index: 90;
+    background: var(--cream);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 2.5rem;
+    transform: translateY(-100%);
+    transition: transform .5s var(--ease-out-expo);
+  }
+  .mobile-menu.open { transform: none; }
+  .mobile-menu a {
+    font-family: var(--ff-display);
+    font-size: 2.5rem; font-weight: 300;
+    color: var(--ink); letter-spacing: -.01em;
+  }
+
+  /* ─── RESPONSIVE ──────────────────────────────────── */
+  @media (max-width: 1024px) {
+    #hero { grid-template-columns: 1fr; text-align: center; }
+    .hero-tagline { margin: 0 auto 2.8rem; }
+    .hero-actions { justify-content: center; }
+    .hero-visual { display: none; }
+    #about { grid-template-columns: 1fr; margin: 0 1rem; padding: 3rem 2rem; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card.featured { flex-direction: column; }
+    .project-card.featured .project-thumb { width: 100%; aspect-ratio: 16/9; }
+    .process-steps { grid-template-columns: repeat(2,1fr); }
+    .process-steps::before { display: none; }
+    .gallery-grid { grid-template-columns: repeat(2,1fr); }
+    #gallery { margin: 0 1rem; padding: 3rem 2rem; }
+    #contact { margin: 0 1rem 3rem; padding: 4rem 2rem; }
+    #contact::before { font-size: 8rem; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1.2rem 1.5rem; }
+    nav.scrolled { padding: .9rem 1.5rem; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    section, #projects, #process { padding: 4rem 1.5rem; }
+    #hero { padding: 6rem 1.5rem 4rem; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; }
+    .modal { padding: 2rem 1.5rem; }
+    .modal-grid { grid-template-columns: 1fr; }
+    .process-steps { grid-template-columns: 1fr; }
+    footer { padding: 1.5rem; text-align: center; justify-content: center; }
+  }
+
+  @media (max-width: 480px) {
+    .gallery-grid { grid-template-columns: 1fr; }
+    .hero-name { font-size: 3.5rem; }
+    .projects-grid { gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div id="cursor"></div>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="closeMobile()">About</a>
+  <a href="#projects" onclick="closeMobile()">Work</a>
+  <a href="#gallery" onclick="closeMobile()">Gallery</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+</div>
+
+<!-- ─── NAV ─── -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">Isha.</a>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#projects">Work</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#contact" class="nav-cta">Say Hello</a>
+  </div>
+  <div class="hamburger" id="hamburger" onclick="toggleMobile()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-text">
+    <div class="hero-eyebrow reveal">UI/UX Designer — Based in India</div>
+    <h1 class="hero-name reveal reveal-delay-1">
+      Isha<br /><em>Designs.</em>
+    </h1>
+    <p class="hero-tagline reveal reveal-delay-2">
+      Designing meaningful digital experiences that balance clarity, beauty, and purpose.
+    </p>
+    <div class="hero-actions reveal reveal-delay-3">
+      <a href="#projects" class="btn-primary">View Work</a>
+      <a href="#contact" class="btn-outline">Get in Touch</a>
+    </div>
+  </div>
+
+  <div class="hero-visual reveal reveal-delay-2">
+    <div class="hero-blob" style="position:relative;">
+      <div class="hero-blob-inner"></div>
+      <span class="hero-initials">I.</span>
+    </div>
+    <div class="badge" style="top:12%;right:-20px;">
+      <div class="badge-dot" style="background:var(--accent2)"></div>
+      UX Research
+    </div>
+    <div class="badge" style="bottom:22%;left:-32px;">
+      <div class="badge-dot" style="background:var(--accent)"></div>
+      UI Design
+    </div>
+    <div class="badge" style="bottom:6%;right:15%;">
+      <div class="badge-dot" style="background:#4a90d9"></div>
+      Figma Expert
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ─── ABOUT ─── -->
+<section id="about" style="display:block;padding:0;margin-top:3rem;margin-bottom:3rem;">
+  <div id="about" style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;background:var(--mist);border-radius:2rem;margin:0 2rem;padding:5rem;border:1px solid var(--border);">
+    <div>
+      <div class="section-label reveal">About Me</div>
+      <h2 class="section-title reveal reveal-delay-1">Crafting calm,<br /><em style="font-style:italic;color:var(--accent);">purposeful</em> design.</h2>
+      <p class="about-bio reveal reveal-delay-2">
+        I'm a UI/UX designer with a passion for creating digital products that feel <strong>effortless to use</strong>. I believe good design is invisible — it simply works. I approach every project with curiosity, research, and a careful eye for detail.
+      </p>
+      <p class="about-bio reveal reveal-delay-3" style="margin-top:1rem;">
+        My background blends <strong>visual design sensibility</strong> with a user-centred mindset. From wireframes to polished interfaces, I enjoy the full design journey.
+      </p>
+    </div>
+    <div class="about-right">
+      <div class="skills-block reveal">
+        <h4>Skills</h4>
+        <div class="tags">
+          <span class="tag">UI Design</span>
+          <span class="tag">UX Research</span>
+          <span class="tag">Wireframing</span>
+          <span class="tag">Prototyping</span>
+          <span class="tag">Information Architecture</span>
+          <span class="tag">Usability Testing</span>
+        </div>
+      </div>
+      <div class="tools-block reveal reveal-delay-1">
+        <h4>Tools</h4>
+        <div class="tags">
+          <span class="tag accent">Figma</span>
+          <span class="tag">Adobe XD</span>
+          <span class="tag">Notion</span>
+          <span class="tag">Maze</span>
+          <span class="tag">Miro</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROJECTS ─── -->
+<section id="projects">
+  <div class="projects-header">
+    <div>
+      <div class="section-label reveal">Selected Work</div>
+      <h2 class="section-title reveal reveal-delay-1">Featured Projects</h2>
+    </div>
+    <a href="#gallery" class="view-all reveal">All work ↗</a>
+  </div>
+
+  <div class="projects-grid">
+
+    <!-- Featured: Wooden Jug -->
+    <div class="project-card featured reveal" onclick="openModal('woodenjug')">
+      <div class="project-thumb">
+        <div class="thumb-inner thumb-wj">
+          <div class="thumb-grid"></div>
+          <span style="font-size:5rem;letter-spacing:-.04em;color:rgba(255,255,255,.35);">WJ</span>
+        </div>
+      </div>
+      <div class="project-info">
+        <div class="project-tags">
+          <span class="project-tag">Case Study</span>
+          <span class="project-tag">Redesign</span>
+          <span class="project-tag">B2B</span>
+        </div>
+        <h3 class="project-title">Wooden Jug Website Redesign</h3>
+        <p class="project-desc">A UX/UI case study focused on improving the usability, structure, and visual design of the Wooden Jug website — with particular attention to B2B user flows, product categorisation, and visual hierarchy.</p>
+        <a href="#" class="case-study-link" onclick="event.preventDefault();openModal('woodenjug')">
+          View Case Study
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- FinTrack -->
+    <div class="project-card reveal reveal-delay-1" onclick="openModal('fintrack')">
+      <div class="project-thumb">
+        <div class="thumb-inner thumb-fin">
+          <div class="thumb-grid"></div>
+          <span>FT</span>
+        </div>
+      </div>
+      <div class="project-info">
+        <div class="project-tags">
+          <span class="project-tag">Mobile App</span>
+          <span class="project-tag">Finance</span>
+        </div>
+        <h3 class="project-title">FinTrack — Personal Finance App</h3>
+        <p class="project-desc">A mobile-first finance tracker designed to help young adults understand and manage their spending with clarity and zero friction.</p>
+        <a href="#" class="case-study-link" onclick="event.preventDefault();openModal('fintrack')">View Case Study
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- HealthBridge -->
+    <div class="project-card reveal reveal-delay-2" onclick="openModal('healthbridge')">
+      <div class="project-thumb">
+        <div class="thumb-inner thumb-hlth">
+          <div class="thumb-grid"></div>
+          <span>HB</span>
+        </div>
+      </div>
+      <div class="project-info">
+        <div class="project-tags">
+          <span class="project-tag">Dashboard</span>
+          <span class="project-tag">Healthcare</span>
+        </div>
+        <h3 class="project-title">HealthBridge Patient Portal</h3>
+        <p class="project-desc">Redesigning the patient experience for a healthcare portal — making appointments, records, and prescriptions accessible and stress-free.</p>
+        <a href="#" class="case-study-link" onclick="event.preventDefault();openModal('healthbridge')">View Case Study
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── CASE STUDY MODALS ─── -->
+<!-- Wooden Jug Modal -->
+<div class="modal-overlay" id="modal-woodenjug">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" onclick="closeModal('woodenjug')">✕</button>
+    <div class="project-tags" style="margin-bottom:.6rem;">
+      <span class="project-tag">Case Study</span>
+      <span class="project-tag">Redesign</span>
+      <span class="project-tag">B2B</span>
+    </div>
+    <h2 style="font-family:var(--ff-display);font-size:2.2rem;font-weight:300;margin-bottom:.8rem;">Wooden Jug Website Redesign</h2>
+    <p class="modal-lead">A UX/UI case study focused on improving the usability, information architecture, and visual design of the Wooden Jug website — with a focus on B2B customer needs.</p>
+
+    <hr class="modal-divider" />
+
+    <div class="modal-body">
+      <h3 class="modal-section-title">01 — Overview</h3>
+      <p>Wooden Jug is a wholesale supplier of artisanal wooden homeware products. Their existing website presented a cluttered, difficult-to-navigate experience that was failing business buyers. The goal was to redesign the site to clearly communicate the product offering and streamline the B2B purchasing journey.</p>
+
+      <div class="modal-grid">
+        <div class="modal-card">
+          <h5>My Role</h5>
+          <p>UX Researcher, UI Designer — end-to-end case study</p>
+        </div>
+        <div class="modal-card">
+          <h5>Duration</h5>
+          <p>3 weeks · Self-initiated case study</p>
+        </div>
+        <div class="modal-card">
+          <h5>Tools Used</h5>
+          <p>Figma, Notion, pen & paper</p>
+        </div>
+        <div class="modal-card">
+          <h5>Deliverables</h5>
+          <p>Heuristic audit, wireframes, hi-fi UI screens</p>
+        </div>
+      </div>
+
+      <hr class="modal-divider" />
+      <h3 class="modal-section-title">02 — Problems Identified</h3>
+      <p>Before redesigning, I performed a heuristic evaluation of the existing site against Nielsen's 10 usability heuristics. Key problems included:</p>
+      <ul class="outcome-list" style="margin-top:.8rem;">
+        <li>No clear navigation — products were hard to find and categorise</li>
+        <li>Cluttered homepage with competing messages and no clear hierarchy</li>
+        <li>Product pages lacked structured information for B2B buyers (MOQ, lead times, pricing tiers)</li>
+        <li>No clear user flow from browse → enquiry → contact</li>
+        <li>Outdated visual design that did not reflect the brand's quality</li>
+      </ul>
+
+      <hr class="modal-divider" />
+      <h3 class="modal-section-title">03 — Research Insights</h3>
+      <p>Based on heuristic analysis and assumed B2B buyer personas, the core insight was: <strong>business buyers need speed and clarity</strong>. They visit with a specific goal, want to find what they need quickly, and need enough information to make a purchasing decision or place an enquiry without calling.</p>
+      <p>The existing site forced users to work too hard for basic information, creating unnecessary friction.</p>
+
+      <hr class="modal-divider" />
+      <h3 class="modal-section-title">04 — Wireframing Process</h3>
+      <p>I began with low-fidelity sketches to explore layout options, prioritising a cleaner navigation structure and a focused homepage hierarchy. Key decisions at this stage:</p>
+      <ul class="outcome-list" style="margin-top:.8rem;">
+        <li>Restructure navigation into clear product categories</li>
+        <li>Homepage: hero with single CTA, then product highlights, then trust signals</li>
+        <li>Product listing page with filterable grid layout</li>
+        <li>Streamlined product detail page with B2B-specific info sections</li>
+      </ul>
+
+      <hr class="modal-divider" />
+      <h3 class="modal-section-title">05 — UI Redesign Decisions</h3>
+      <p>The visual direction was warm, earthy, and premium — matching the brand's handmade, natural product aesthetic. Design decisions included:</p>
+      <ul class="outcome-list" style="margin-top:.8rem;">
+        <li>Warm off-white backgrounds with natural wood-toned accents</li>
+        <li>Serif display font for headings, clean sans-serif for body</li>
+        <li>Generous white space to let products breathe</li>
+        <li>Sticky navigation for easy browsing</li>
+        <li>Clear CTAs: "View Range" and "Request a Quote"</li>
+      </ul>
+
+      <hr class="modal-divider" />
+      <h3 class="modal-section-title">06 — Outcome</h3>
+      <p>The redesign resulted in a significantly cleaner, more purposeful website experience. Key improvements:</p>
+      <ul class="outcome-list" style="margin-top:.8rem;">
+        <li>Clear product categorisation — reduced browsing time</li>
+        <li>Improved visual hierarchy — users understand the brand within seconds</li>
+        <li>Structured product pages with B2B-relevant information</li>
+        <li>Streamlined enquiry flow — fewer steps to get in touch</li>
+        <li>Modern, on-brand UI that reflects product quality</li>
+      </ul>
+
+      <hr class="modal-divider" />
+      <h3 class="modal-section-title">07 — Key Learnings</h3>
+      <p>This project reinforced the value of starting with a thorough heuristic audit before jumping into design. Understanding the <em>why</em> behind usability failures led to more intentional, justified design decisions. It also highlighted the importance of designing for a specific audience — B2B users have very different needs to general consumers.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FinTrack Modal -->
+<div class="modal-overlay" id="modal-fintrack">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" onclick="closeModal('fintrack')">✕</button>
+    <div class="project-tags" style="margin-bottom:.6rem;">
+      <span class="project-tag">Mobile App</span>
+      <span class="project-tag">Finance</span>
+    </div>
+    <h2 style="font-family:var(--ff-display);font-size:2.2rem;font-weight:300;margin-bottom:.8rem;">FinTrack — Personal Finance App</h2>
+    <p class="modal-lead">A mobile-first finance tracker designed to make personal budgeting clear, calm, and accessible for young adults.</p>
+
+    <hr class="modal-divider" />
+    <div class="modal-body">
+      <h3 class="modal-section-title">Overview</h3>
+      <p>Most finance apps feel either too complex or too simplistic. FinTrack aimed to find the middle ground — giving users meaningful insight into their spending without overwhelming them with data.</p>
+
+      <hr class="modal-divider" />
+      <h3 class="modal-section-title">Problem</h3>
+      <p>Young adults often avoid budgeting because existing apps feel intimidating. The challenge was designing an interface that presents financial data in a way that feels manageable and even motivating.</p>
+
+      <hr class="modal-divider" />
+      <h3 class="modal-section-title">Process</h3>
+      <ul class="outcome-list" style="margin-top:.6rem;">
+        <li>User interviews with 5 participants aged 20–30</li>
+        <li>Competitive analysis of existing finance apps</li>
+        <li>Low-fi wireframes → mid-fi prototype → usability testing</li>
+        <li>Iterated based on 3 rounds of feedback</li>
+      </ul>
+
+      <hr class="modal-divider" />
+      <h3 class="modal-section-title">Solution</h3>
+      <p>A clean dashboard with a monthly spending summary, category breakdown, and a simple "remaining budget" indicator. Onboarding was reduced to 3 screens. Tone of voice was calm and non-judgmental.</p>
+
+      <hr class="modal-divider" />
+      <h3 class="modal-section-title">Outcome</h3>
+      <ul class="outcome-list" style="margin-top:.6rem;">
+        <li>Task completion rate improved from 60% → 91% in usability tests</li>
+        <li>Users described the app as "simple" and "reassuring"</li>
+        <li>Strong positive feedback on the spending visualisation screen</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- HealthBridge Modal -->
+<div class="modal-overlay" id="modal-healthbridge">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" onclick="closeModal('healthbridge')">✕</button>
+    <div class="project-tags" style="margin-bottom:.6rem;">
+      <span class="project-tag">Dashboard</span>
+      <span class="project-tag">Healthcare</span>
+    </div>
+    <h2 style="font-family:var(--ff-display);font-size:2.2rem;font-weight:300;margin-bottom:.8rem;">HealthBridge Patient Portal</h2>
+    <p class="modal-lead">Redesigning a patient-facing healthcare portal to reduce anxiety and make medical administration feel human.</p>
+
+    <hr class="modal-divider" />
+    <div class="modal-body">
+      <h3 class="modal-section-title">Overview</h3>
+      <p>Healthcare portals are often confusing and clinical. HealthBridge needed a redesign that prioritised clarity, accessibility, and a sense of calm for patients managing their health online.</p>
+
+      <hr class="modal-divider" />
+      <h3 class="modal-section-title">Problem</h3>
+      <p>Patients struggled to find appointment details, access test results, and request repeat prescriptions. The existing portal had poor navigation, dense text, and no mobile optimisation.</p>
+
+      <hr class="modal-divider" />
+      <h3 class="modal-section-title">Process</h3>
+      <ul class="outcome-list" style="margin-top:.6rem;">
+        <li>Heuristic evaluation of the existing portal</li>
+        <li>Accessibility audit (WCAG 2.1 AA)</li>
+        <li>Persona development for primary user groups</li>
+        <li>Full wireframe → prototype → test → iterate cycle</li>
+      </ul>
+
+      <hr class="modal-divider" />
+      <h3 class="modal-section-title">Solution</h3>
+      <p>A redesigned dashboard with a clear overview of upcoming appointments, recent results, and a simple prescription request flow. Accessible colour contrast, large touch targets, and plain language throughout.</p>
+
+      <hr class="modal-divider" />
+      <h3 class="modal-section-title">Outcome</h3>
+      <ul class="outcome-list" style="margin-top:.6rem;">
+        <li>Navigation errors reduced significantly in usability testing</li>
+        <li>WCAG AA compliance achieved across all primary screens</li>
+        <li>Patients described the experience as "much clearer" and "less stressful"</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ─── GALLERY ─── -->
+<div id="gallery" style="display:block;margin-top:3rem;margin-bottom:3rem;">
+  <div style="background:var(--mist);border-radius:2rem;margin:0 2rem;padding:5rem;border:1px solid var(--border);">
+    <div class="section-label reveal">Visual Explorations</div>
+    <h2 class="section-title reveal reveal-delay-1">UI Gallery</h2>
+    <p style="color:var(--stone);margin-top:.8rem;font-size:.92rem;" class="reveal reveal-delay-2">A collection of smaller interface explorations and design experiments.</p>
+
+    <div class="gallery-grid" style="margin-top:2.5rem;">
+      <div class="gallery-item reveal">
+        <div class="gallery-fill g1">Components</div>
+        <div class="gallery-overlay"><span>Button Systems</span></div>
+      </div>
+      <div class="gallery-item reveal reveal-delay-1">
+        <div class="gallery-fill g2">Dashboards</div>
+        <div class="gallery-overlay"><span>Analytics UI</span></div>
+      </div>
+      <div class="gallery-item reveal reveal-delay-2">
+        <div class="gallery-fill g3">Forms</div>
+        <div class="gallery-overlay"><span>Onboarding Flow</span></div>
+      </div>
+      <div class="gallery-item reveal reveal-delay-1">
+        <div class="gallery-fill g4">Typography</div>
+        <div class="gallery-overlay"><span>Type Exploration</span></div>
+      </div>
+      <div class="gallery-item reveal reveal-delay-2">
+        <div class="gallery-fill g5">Icons</div>
+        <div class="gallery-overlay"><span>Icon Set Design</span></div>
+      </div>
+      <div class="gallery-item reveal reveal-delay-3">
+        <div class="gallery-fill g6">Colour</div>
+        <div class="gallery-overlay"><span>Design System</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PROCESS ─── -->
+<section id="process">
+  <div class="section-label reveal">How I Work</div>
+  <h2 class="section-title reveal reveal-delay-1">Design Process</h2>
+  <div class="process-steps">
+    <div class="process-step reveal">
+      <div class="step-num">01</div>
+      <h4 class="step-title">Research</h4>
+      <p class="step-desc">Understanding the user, the context, and the problem before picking up a pencil. User interviews, heuristic analysis, competitive review.</p>
+    </div>
+    <div class="process-step reveal reveal-delay-1">
+      <div class="step-num">02</div>
+      <h4 class="step-title">Ideation</h4>
+      <p class="step-desc">Sketching fast, exploring multiple directions, and narrowing down through logic and intuition. Low-fi wireframes and flow maps.</p>
+    </div>
+    <div class="process-step reveal reveal-delay-2">
+      <div class="step-num">03</div>
+      <h4 class="step-title">Design</h4>
+      <p class="step-desc">Building hi-fidelity screens with intentional typography, spacing, and interaction design. Prototypes ready for testing.</p>
+    </div>
+    <div class="process-step reveal reveal-delay-3">
+      <div class="step-num">04</div>
+      <h4 class="step-title">Testing</h4>
+      <p class="step-desc">Validating assumptions with real users. Identifying friction, iterating, and refining until the experience feels right.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTACT ─── -->
+<div id="contact" style="background:var(--ink);color:var(--cream);border-radius:2rem;margin:0 2rem 4rem;padding:6rem;text-align:center;position:relative;overflow:hidden;">
+  <div style="font-family:var(--ff-display);font-size:min(16rem,30vw);font-weight:300;color:rgba(255,255,255,.03);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;letter-spacing:-.04em;">Hello.</div>
+  <div class="section-label reveal" style="justify-content:center;color:rgba(245,242,238,.5);">Get In Touch</div>
+  <h2 class="section-title reveal reveal-delay-1" style="color:var(--cream);margin-bottom:1.2rem;">Let's work together.</h2>
+  <p class="reveal reveal-delay-2" style="font-size:1rem;color:rgba(245,242,238,.6);margin-bottom:2.5rem;max-width:420px;margin-left:auto;margin-right:auto;">Whether you have a project in mind or just want to say hello — my inbox is always open.</p>
+  <a href="mailto:hello@isha.design" class="contact-email reveal reveal-delay-3">hello@isha.design</a>
+  <div class="social-links reveal reveal-delay-4" style="margin-top:2rem;">
+    <a href="#" class="social-link">LinkedIn</a>
+    <a href="#" class="social-link">Behance</a>
+    <a href="#" class="social-link">Dribbble</a>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <span>© 2025 Isha — UI/UX Designer</span>
+  <span style="color:var(--border);">Designed with care.</span>
+</footer>
+
+<script>
+  // ── Custom Cursor ──────────────────────────────────────
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+  });
+  document.querySelectorAll('a,button,.project-card,.gallery-item').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
+  });
+
+  // ── Navbar scroll ──────────────────────────────────────
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // ── Mobile menu ────────────────────────────────────────
+  const mobileMenu = document.getElementById('mobileMenu');
+  const hamburger  = document.getElementById('hamburger');
+  function toggleMobile() {
+    mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('open');
+  }
+  function closeMobile() { mobileMenu.classList.remove('open'); hamburger.classList.remove('open'); }
+
+  // ── Reveal on scroll ───────────────────────────────────
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  // ── Modals ─────────────────────────────────────────────
+  function openModal(id) {
+    document.getElementById('modal-' + id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(id) {
+    document.getElementById('modal-' + id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+      document.body.style.overflow = '';
+    }
+  });
+
+  // ── Trigger initial hero reveals ─────────────────────
+  window.addEventListener('load', () => {
+    document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('visible'));
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wooden Jug - Case Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --ink: #1a1714;
+      --mist: #f5f2ee;
+      --cream: #faf8f5;
+      --stone: #9c9289;
+      --accent: #c97d4e;
+      --border: rgba(26, 23, 20, .09);
+      --ff-display: "Cormorant Garamond", Georgia, serif;
+      --ff-body: "DM Sans", sans-serif;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--ff-body);
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    #cursor {
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform .15s var(--ease-out-expo), width .3s, height .3s, background .3s;
+    }
+
+    #cursor.grow {
+      width: 48px;
+      height: 48px;
+      background: rgba(201, 125, 78, .18);
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.4rem 4rem;
+      background: rgba(250, 248, 245, 0);
+      backdrop-filter: blur(0px);
+      transition: background .5s, backdrop-filter .5s, padding .4s;
+      border-bottom: 1px solid transparent;
+    }
+
+    nav.scrolled {
+      background: rgba(250, 248, 245, .88);
+      backdrop-filter: blur(18px);
+      padding: 1rem 4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--ff-display);
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: .02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      font-size: .82rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--stone);
+      transition: color .25s;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+    }
+
+    .nav-links .nav-cta {
+      padding: .5rem 1.3rem;
+      border: 1px solid var(--ink);
+      border-radius: 100px;
+      color: var(--ink);
+      transition: background .25s, color .25s;
+    }
+
+    .nav-links .nav-cta:hover {
+      background: var(--ink);
+      color: var(--cream);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 1.5px;
+      background: var(--ink);
+      transition: .3s;
+    }
+
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: var(--cream);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.4rem;
+      transform: translateY(-100%);
+      transition: transform .5s var(--ease-out-expo);
+    }
+
+    .mobile-menu.open {
+      transform: none;
+    }
+
+    .mobile-menu a {
+      font-family: var(--ff-display);
+      font-size: 2.4rem;
+      font-weight: 300;
+      color: var(--ink);
+    }
+
+    section {
+      padding: 6rem 4rem;
+    }
+
+    #hero {
+      min-height: 70vh;
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      align-items: center;
+      gap: 3.5rem;
+      padding-top: 8rem;
+      position: relative;
+    }
+
+    #hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-text {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: .78rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--stone);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-eyebrow::before {
+      content: "";
+      width: 30px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .hero-name {
+      font-family: var(--ff-display);
+      font-size: clamp(2.8rem, 7vw, 5.2rem);
+      line-height: .95;
+      font-weight: 300;
+      letter-spacing: -.02em;
+      margin-bottom: 1rem;
+    }
+
+    .hero-name em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-tagline {
+      font-size: 1.02rem;
+      color: var(--stone);
+      max-width: 540px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .8rem;
+    }
+
+    .btn-primary {
+      padding: .88rem 1.7rem;
+      background: var(--ink);
+      color: var(--cream);
+      border-radius: 100px;
+      font-size: .82rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .btn-outline {
+      padding: .88rem 1.7rem;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: .82rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--stone);
+    }
+
+    .btn-outline:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .hero-visual {
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(135deg, #5c4033 0%, #8b5e3c 60%, #c49a6c 100%);
+      border-radius: 1.5rem;
+      min-height: 360px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, .7);
+      font-family: var(--ff-display);
+      font-size: clamp(4rem, 10vw, 8rem);
+      letter-spacing: -.04em;
+    }
+
+    #design-viewer {
+      padding-top: 1rem;
+    }
+
+    .viewer-shell {
+      background: var(--mist);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 1.1rem;
+    }
+
+    .viewer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding: .4rem .2rem .8rem;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .viewer-head h2 {
+      font-family: var(--ff-display);
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 400;
+    }
+
+    .viewer-head p {
+      font-size: .9rem;
+      color: var(--stone);
+    }
+
+    .viewer-actions {
+      display: flex;
+      gap: .7rem;
+      flex-wrap: wrap;
+    }
+
+    .pdf-frame {
+      width: 100%;
+      height: min(85vh, 1050px);
+      border: 1px solid var(--border);
+      border-radius: .95rem;
+      background: #fff;
+    }
+
+    footer {
+      padding: 2rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .78rem;
+      color: var(--stone);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .pdf-container {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      /* hides outer scrollbar */
+      border-radius: 12px;
+    }
+
+    .pdf-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    @media (max-width: 1024px) {
+      #hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        min-height: auto;
+      }
+
+      .hero-actions {
+        justify-content: center;
+      }
+
+      .hero-visual {
+        min-height: 300px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 1.2rem 1.5rem;
+      }
+
+      nav.scrolled {
+        padding: .9rem 1.5rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      section {
+        padding: 4rem 1.5rem;
+      }
+
+      #hero {
+        padding-top: 6.5rem;
+      }
+
+      .pdf-frame {
+        height: 72vh;
+      }
+
+      footer {
+        padding: 1.5rem;
+        text-align: center;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-name {
+        font-size: 3rem;
+      }
+
+      .pdf-frame {
+        height: 68vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="cursor"></div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html#about" onclick="closeMobile()">About</a>
+    <a href="index.html#projects" onclick="closeMobile()">Work</a>
+    <a href="#design-viewer" onclick="closeMobile()">Design</a>
+    <a href="index.html#contact" onclick="closeMobile()">Contact</a>
+  </div>
+
+  <nav id="navbar">
+    <a href="index.html#hero" class="nav-logo">Isha.</a>
+    <div class="nav-links">
+      <a href="index.html#about">About</a>
+      <a href="index.html#projects">Work</a>
+      <a href="#design-viewer">Design</a>
+      <a href="index.html#contact" class="nav-cta">Say Hello</a>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMobile()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-text">
+      <div class="hero-eyebrow">Case Study Showcase</div>
+      <h1 class="hero-name">Wooden Jug <em>Design</em></h1>
+      <p class="hero-tagline">
+        This page displays the actual final design presentation for the Wooden Jug website redesign.
+        Scroll down to view the full case study PDF in a responsive preview.
+      </p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#design-viewer">View Design</a>
+        <a class="btn-outline" href="woodenjug_case-study.pdf" target="_blank" rel="noopener">Open PDF</a>
+      </div>
+    </div>
+    <div class="hero-visual">WJ</div>
+  </section>
+
+  <section id="design-viewer">
+    <div class="viewer-shell">
+      <div class="viewer-head">
+        <div>
+          <h2>Actual Design Presentation</h2>
+          <p>Embedded file: woodenjug_case-study.pdf</p>
+        </div>
+        <div class="viewer-actions">
+          <a class="btn-primary" href="woodenjug_case-study.pdf#toolbar=0&navpanes=0&scrollbar=0" target="_blank"
+            rel="noopener">
+            Open Fullscreen
+          </a>
+        </div>
+      </div>
+      <div class="pdf-container">
+        <div class="pdf-container">
+          <iframe class="pdf-frame" src="woodenjug_case-study.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH"
+            scrolling="no" frameborder="0" title="Wooden Jug Case Study PDF">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Isha - UI/UX Designer</span>
+    <span style="color:var(--border);">Wooden Jug case study presentation.</span>
+  </footer>
+
+  <script>
+    const cursor = document.getElementById("cursor");
+    document.addEventListener("mousemove", (e) => {
+      cursor.style.left = e.clientX + "px";
+      cursor.style.top = e.clientY + "px";
+    });
+    document.querySelectorAll("a,button,.btn-primary,.btn-outline,.hamburger").forEach((el) => {
+      el.addEventListener("mouseenter", () => cursor.classList.add("grow"));
+      el.addEventListener("mouseleave", () => cursor.classList.remove("grow"));
+    });
+
+    const navbar = document.getElementById("navbar");
+    window.addEventListener("scroll", () => {
+      navbar.classList.toggle("scrolled", window.scrollY > 40);
+    });
+
+    const mobileMenu = document.getElementById("mobileMenu");
+    const hamburger = document.getElementById("hamburger");
+    function toggleMobile() {
+      mobileMenu.classList.toggle("open");
+      hamburger.classList.toggle("open");
+    }
+    function closeMobile() {
+      mobileMenu.classList.remove("open");
+      hamburger.classList.remove("open");
+    }
+  </script>
+</body>
+
+</html>
